@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>YouTube Video Downloader</title>
+    <script>
+        function showLoadingMessage() {
+            document.getElementById("loading-message").style.display = "block";
+            document.getElementById("download-link").style.display = "none";
+        }
+    </script>
+</head>
+<body>
+    <h1>YouTube Video Downloader mine</h1>
+    <form method="POST">
+        <label for="link">Enter YouTube Video Link:</label>
+        <input type="text" name="link" id="link" required>
+        <button type="submit" onclick="showLoadingMessage()">Download</button>
+    </form>
+    <div id="loading-message" style="display: none;">Please wait until your download is ready...</div>
+    {% if video_id %}
+        <div id="download-link">
+            <p>{{ message }}</p>
+            {{video_title}} : download name
+            <a href="{{ url_for('download_file', filename= video_id,video_title=video_title) }}" download>Download Video</a>
+        </div>
+    {% endif %}
+</body>
+</html>
