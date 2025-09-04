@@ -23,10 +23,15 @@ def extract_playlist_name(url):
             elif 'playlist_title' in info:
                 return info['playlist_title']
             else:
-                return "Playlist title not found"
+                # Fallback: use playlist ID as name
+                playlist_id = extract_playlist_id(url)
+                return f"Playlist_{playlist_id}" if playlist_id else "Unknown_Playlist"
                 
     except Exception as e:
-        return f"Error extracting playlist name: {str(e)}"
+        print(f"Warning: Could not extract playlist name: {str(e)}")
+        # Fallback: use playlist ID as name
+        playlist_id = extract_playlist_id(url)
+        return f"Playlist_{playlist_id}" if playlist_id else "Unknown_Playlist"
 
 def extract_playlist_id(url):
     """

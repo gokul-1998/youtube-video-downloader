@@ -19,14 +19,24 @@ if not os.path.exists(output_dir):
 # in the title if there is any special character it will be replaced by _ and the file will be saved
 
 outtmpl=os.path.join('static', output_dir,'%(title)s.%(ext)s')
-def youtube_down(link):
+def youtube_down(link, custom_output_dir=None, serial_number=None):
     print("inside youtube_down")
 
     video_id = link.split('v=')[-1].split('&')[0]
+    
+    # Use custom output directory if provided, otherwise use default
+    if custom_output_dir:
+        output_template = os.path.join('static', custom_output_dir, '%(title)s.%(ext)s')
+        if serial_number is not None:
+            # Add serial number prefix to filename
+            output_template = os.path.join('static', custom_output_dir, f'{serial_number:02d}_%(title)s.%(ext)s')
+    else:
+        output_template = os.path.join('static', output_dir, '%(title)s.%(ext)s')
+    
     ydl_opts = {
         'format': 'bestvideo+bestaudio/best',
         # instead of title we can use %(id)s to save the file with the video id
-        'outtmpl': os.path.join('static', output_dir,'%(title)s.%(ext)s'),
+        'outtmpl': output_template,
         'writesubtitles': False,  # Disable subtitle download to avoid rate limiting
         'writeautomaticsub': False,  # Disable automatic subtitle download
         'writethumbnail': True,
@@ -77,6 +87,28 @@ def get_safe_title(title):
         else:
             x+=i
     return x
+
+def get_safe_folder_name(name):
+    """Create a filename-safe folder name"""
+    # Remove or replace invalid characters for folder names
+    safe_name = ""
+    for char in name:
+        if char.isalnum() or char in [' ', '-', '_']:
+            safe_name += char
+        else:
+            safe_name += "_"
+    
+    # Remove multiple consecutive underscores and spaces
+    safe_name = re.sub(r'[_\s]+', '_', safe_name)
+    
+    # Remove leading/trailing underscores and spaces
+    safe_name = safe_name.strip('_ ')
+    
+    # Limit length to avoid filesystem issues
+    if len(safe_name) > 100:
+        safe_name = safe_name[:100]
+    
+    return safe_name
 
 
 if __name__ == '__main__':
