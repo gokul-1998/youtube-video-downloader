@@ -27,12 +27,14 @@ def youtube_down(link):
         'format': 'bestvideo+bestaudio/best',
         # instead of title we can use %(id)s to save the file with the video id
         'outtmpl': os.path.join('static', output_dir,'%(title)s.%(ext)s'),
-        'writesubtitles': True,
-        'writeautomaticsub': True,
+        'writesubtitles': False,  # Disable subtitle download to avoid rate limiting
+        'writeautomaticsub': False,  # Disable automatic subtitle download
         'writethumbnail': True,
         'writeinfojson': True,
         'noplaylist': True,
         'quiet': True,
+        'ignoreerrors': True,  # Continue on download errors
+        'no_warnings': False,  # Show warnings but don't fail
     }
 
     try:
